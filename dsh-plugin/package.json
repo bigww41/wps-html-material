@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "description": "Right-Sidebar PPT canvas that previews a single-file HTML material on a deck and registers the bundled wps-html-material skill.",
+  "license": "MIT",
   "exports": {
     ".": "./index.js",
     "./client": "./client.js",

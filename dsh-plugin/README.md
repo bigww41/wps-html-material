@@ -65,6 +65,10 @@ icon.svg
 
 见 [docs/CHANGELOG.md](docs/CHANGELOG.md)。
 
+## 许可
+
+MIT © 2026 Chongwen LIU。见仓库根目录的 [LICENSE](../LICENSE)。
+
 ---
 
 **English**: A DeepSeek Harness right-Sidebar workbench for WPS Presentation

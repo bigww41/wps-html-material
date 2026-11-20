@@ -159,6 +159,6 @@ dsh-plugin/                     DSH 右侧栏插件（PPT 画布 + 预览 + 自�
 - 依赖登录、后端接口或实时数据的页面；
 - 需要 WPS 之外浏览器窗口铺满的场景。
 
-## 变更
+## 许可
 
-见 [dsh-plugin/docs/CHANGELOG.md](dsh-plugin/docs/CHANGELOG.md)。
+MIT © 2026 Chongwen LIU。见 [LICENSE](LICENSE)。
