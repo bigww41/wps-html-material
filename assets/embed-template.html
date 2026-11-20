@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HTML 素材</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: transparent;
+    font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  }
+  #app {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    container-type: size;
+    user-select: none;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+  }
+  .controls {
+    position: absolute;
+    left: 50%;
+    bottom: 4cqh;
+    transform: translateX(-50%);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(4px, 1.2cqw, 10px);
+    max-width: 92%;
+  }
+  .controls button {
+    font: inherit;
+    font-size: clamp(9px, 1.9cqw, 14px);
+    line-height: 1;
+    padding: clamp(5px, 1.1cqw, 9px) clamp(7px, 1.6cqw, 14px);
+    color: #1f3a4a;
+    background: rgba(255, 255, 255, .72);
+    border: 1px solid rgba(120, 150, 170, .45);
+    border-radius: 999px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .controls button:hover,
+  .controls button[aria-pressed="true"] {
+    background: rgba(22, 125, 135, .9);
+    color: #fff;
+    border-color: transparent;
+  }
+  .controls button:focus-visible {
+    outline: 2px solid #f2a14a;
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body>
+  <div id="app">
+    <canvas id="scene"></canvas>
+    <div class="controls" role="group" aria-label="模型控制">
+      <button id="auto" type="button" aria-pressed="false">自动旋转</button>
+      <button id="zoomIn" type="button">放大</button>
+      <button id="zoomOut" type="button">缩小</button>
+      <button id="wire" type="button" aria-pressed="false">网格</button>
+      <button id="reset" type="button">复位</button>
+    </div>
+  </div>
+  <!-- 把三维库和模型数据内联到本文件；不要引用任何外部地址。 -->
+  <script>
+  (() => {
+    const app = document.getElementById("app");
+    const canvas = document.getElementById("scene");
+    const ctx = canvas.getContext("2d");
+    let width = 0;
+    let height = 0;
+
+    function draw() {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, width, height);
+      // 在这里绘制模型，或在此处接入内联的 3D 渲染循环。
+    }
+
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = canvas.clientWidth;
+      height = canvas.clientHeight;
+      canvas.width = Math.max(1, Math.round(width * dpr));
+      canvas.height = Math.max(1, Math.round(height * dpr));
+      if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      draw();
+    }
+
+    new ResizeObserver(resize).observe(app);
+    resize();
+  })();
+  </script>
+</body>
+</html>

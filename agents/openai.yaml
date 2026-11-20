@@ -1,0 +1,4 @@
+interface:
+  display_name: "WPS HTML素材"
+  short_description: "为WPS演示的HTML素材生成单文件、透明、可自由缩放的交互元素"
+  default_prompt: "Use $wps-html-material to build a single-file, transparent HTML element for a WPS PPT slide."

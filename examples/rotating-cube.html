@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>旋转线框立方体</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: transparent;
+    font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  }
+  #app {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    container-type: size;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    cursor: grab;
+  }
+  canvas:active { cursor: grabbing; }
+  .controls {
+    position: absolute;
+    left: 50%;
+    bottom: 5cqh;
+    transform: translateX(-50%);
+    display: flex;
+    gap: clamp(4px, 1.2cqw, 10px);
+  }
+  .controls button {
+    font: inherit;
+    font-size: clamp(11px, 2.1cqw, 15px);
+    line-height: 1;
+    padding: clamp(5px, 1.2cqw, 9px) clamp(8px, 1.8cqw, 14px);
+    color: #1f3a4a;
+    background: rgba(255, 255, 255, .74);
+    border: 1px solid rgba(120, 150, 170, .45);
+    border-radius: 999px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .controls button:hover,
+  .controls button[aria-pressed="true"] {
+    background: rgba(22, 125, 135, .92);
+    color: #fff;
+    border-color: transparent;
+  }
+  .controls button:focus-visible {
+    outline: 2px solid #f2a14a;
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body>
+  <div id="app">
+    <canvas id="scene" aria-label="旋转线框立方体"></canvas>
+    <div class="controls" role="group" aria-label="模型控制">
+      <button id="auto" type="button" aria-pressed="true">自动旋转</button>
+      <button id="reset" type="button">复位</button>
+    </div>
+  </div>
+  <script>
+  (() => {
+    const app = document.getElementById("app");
+    const canvas = document.getElementById("scene");
+    const ctx = canvas.getContext("2d");
+    const autoButton = document.getElementById("auto");
+    const resetButton = document.getElementById("reset");
+
+    const vertices = [
+      [-1, -1, -1], [1, -1, -1], [1, 1, -1], [-1, 1, -1],
+      [-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1],
+    ];
+    const edges = [
+      [0, 1], [1, 2], [2, 3], [3, 0],
+      [4, 5], [5, 6], [6, 7], [7, 4],
+      [0, 4], [1, 5], [2, 6], [3, 7],
+    ];
+
+    let width = 0;
+    let height = 0;
+    let yaw = 0.6;
+    let pitch = -0.35;
+    let auto = true;
+    let dragging = false;
+    let lastX = 0;
+    let lastY = 0;
+    let frame = 0;
+
+    function project([x, y, z]) {
+      const cy = Math.cos(yaw);
+      const sy = Math.sin(yaw);
+      const cx = Math.cos(pitch);
+      const sx = Math.sin(pitch);
+      const rx = x * cy - z * sy;
+      const rz = x * sy + z * cy;
+      const ry = y * cx - rz * sx;
+      const depth = y * sx + rz * cx;
+      const distance = 4.5;
+      const scale = Math.min(width, height) * 0.3 / (distance + depth * 0.5);
+      return {
+        x: width / 2 + rx * scale * 2.6,
+        y: height / 2 + ry * scale * 2.6,
+        depth,
+      };
+    }
+
+    function draw() {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, width, height);
+      if (width === 0 || height === 0) return;
+      const projected = vertices.map(project);
+      const line = Math.max(1, Math.min(width, height) * 0.004);
+      ctx.lineWidth = line;
+      ctx.lineJoin = "round";
+      ctx.strokeStyle = "rgba(36, 123, 191, 0.9)";
+      for (const [from, to] of edges) {
+        const a = projected[from];
+        const b = projected[to];
+        ctx.globalAlpha = 0.55 + (a.depth + b.depth) * 0.18;
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "#e08a2e";
+      for (const point of projected) {
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, Math.max(2, line * 1.6), 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function tick() {
+      frame = 0;
+      if (auto && !dragging) {
+        yaw += 0.012;
+        pitch = -0.35 + Math.sin(yaw * 0.7) * 0.18;
+      }
+      draw();
+      if (auto && !dragging) frame = requestAnimationFrame(tick);
+    }
+
+    function start() {
+      if (auto && !dragging && frame === 0) {
+        frame = requestAnimationFrame(tick);
+      }
+    }
+
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = canvas.clientWidth;
+      height = canvas.clientHeight;
+      canvas.width = Math.max(1, Math.round(width * dpr));
+      canvas.height = Math.max(1, Math.round(height * dpr));
+      if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      draw();
+    }
+
+    autoButton.addEventListener("click", () => {
+      auto = !auto;
+      autoButton.setAttribute("aria-pressed", String(auto));
+      if (auto) start();
+      else if (frame !== 0) { cancelAnimationFrame(frame); frame = 0; }
+    });
+
+    resetButton.addEventListener("click", () => {
+      yaw = 0.6;
+      pitch = -0.35;
+      draw();
+    });
+
+    canvas.addEventListener("pointerdown", event => {
+      dragging = true;
+      lastX = event.clientX;
+      lastY = event.clientY;
+      canvas.setPointerCapture(event.pointerId);
+    });
+    canvas.addEventListener("pointermove", event => {
+      if (!dragging) return;
+      yaw += (event.clientX - lastX) * 0.01;
+      pitch = Math.max(-1.2, Math.min(1.2, pitch + (event.clientY - lastY) * 0.01));
+      lastX = event.clientX;
+      lastY = event.clientY;
+      draw();
+    });
+    const stop = () => { dragging = false; start(); };
+    canvas.addEventListener("pointerup", stop);
+    canvas.addEventListener("pointercancel", stop);
+
+    new ResizeObserver(resize).observe(app);
+    resize();
+    start();
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "WPS HTML 素材预览",
+    "description": "在右侧边栏里同时放 PPT 和 HTML 素材：用会话标题栏的「HTML 素材预览」按钮打开，或从右侧边栏的添加菜单进入。先从工作区或本地选一个 .pptx，面板内置渲染器会把这份 PPT 的幻灯片画在画布上，并提供翻页；再选一个 .html，素材就以可拖动、可缩放的元素框盖在当前幻灯片上（就是 WPS 演示「HTML素材」的形状）；元素框还可以拖到幻灯片画布之外，停在灰色工作区里，可在「布局 / 交互」之间切换，直接操作素材本身。自检面板按 wps-html-material 的嵌入规范列出外部资源、整页布局、残留小字说明和尺寸风险，并标注行号。文件只在这个面板里渲染读取，不上传、不回写。 安装后还会把原始 skill（SKILL.md、references、scripts、assets）注册为内置技能 wps-html-material。",
+    "detail": "docs/DETAIL.zh.md"
+  }
+}

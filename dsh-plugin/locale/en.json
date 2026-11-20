@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "WPS HTML material preview",
+    "description": "Puts a real PPT deck and a single-file HTML material in the right Sidebar. Open it with the HTML material preview button in the Session header, or from the right Sidebar's add menu, then choose a .pptx from the workspace or your disk: the panel renders the deck's own slides on a canvas, with slide navigation. Choose a .html material next and it appears as a movable, resizable element box on the active slide, and it can be dragged outside the canvas onto the gray stage — the shape a WPS Presentation HTML素材 takes — and can be switched between Layout and Interact. A self-check panel applies the wps-html-material embed rules and lists external resources, page-level layout, leftover small print, and sizing risks with line numbers. Files are read only to render them in this pane; nothing is uploaded or written back. Installation also registers the original skill (SKILL.md, references, scripts, assets) as the bundled wps-html-material skill.",
+    "detail": "docs/DETAIL.md"
+  }
+}

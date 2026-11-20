@@ -1,0 +1,3 @@
+- insert:
+    - id: wps-html-material
+      name: '@local/dsh-wps-html-material'
